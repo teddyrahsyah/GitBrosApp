@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GitBros</string>
+    <string name="user_lists">User Lists</string>
+    <string name="search_info">Please search any user first</string>
+
+    <!--  MENU STRING RESOURCES  -->
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+    <string name="query_hint">Search User</string>
+    <string name="language">Language: EN</string>
+
+    <!--  TAB STRING RESOURCES  -->
+    <string name="followers">%s\nFollowers</string>
+    <string name="following">%s\nFollowing</string>
+
+    <!--  DETAIL STRING RESOURCES  -->
+    <string name="user_detail">User Detail</string>
+    <string name="repos">%s Repositories</string>
+    <string name="repo">%s Repository</string>
+    <string name="name">No Name</string>
+    <string name="username">\@%s</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorite_users">Favorite Users</string>
+</resources>

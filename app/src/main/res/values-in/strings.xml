@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GitBros</string>
+    <string name="user_lists">Daftar User</string>
+    <string name="search_info">Silakan cari user terlebih dahulu</string>
+
+    <!--  MENU STRING RESOURCES  -->
+    <string name="search">Cari</string>
+    <string name="settings">Pengaturan</string>
+    <string name="query_hint">Mencari User</string>
+    <string name="language">Bahasa: ID</string>
+
+    <!--  TAB STRING RESOURCES  -->
+    <string name="followers">%s\nPengikut</string>
+    <string name="following">%s\nMengikuti</string>
+
+    <!--  DETAIL STRING RESOURCES  -->
+    <string name="user_detail">Detail User</string>
+    <string name="repos">%s Repositori</string>
+    <string name="repo">%s Repositori</string>
+    <string name="name">Tidak Ada Nama</string>
+    <string name="username">\@%s</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorite_users">Favorite Users</string>
+</resources>
