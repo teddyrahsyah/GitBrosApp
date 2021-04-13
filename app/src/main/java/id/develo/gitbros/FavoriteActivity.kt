@@ -55,6 +55,7 @@ class FavoriteActivity : AppCompatActivity() {
 
         showLoading(true)
         loadNotesAsync()
+        
         val myObserver = object : ContentObserver(handler){
             override fun onChange(selfChange: Boolean) {
                 super.onChange(selfChange)
@@ -64,8 +65,10 @@ class FavoriteActivity : AppCompatActivity() {
 
         contentResolver.registerContentObserver(CONTENT_URI, true, myObserver)
 
+        // Callback Method when you click Delete Button (ImageButton in RecyclerView Item)
         adapter.setOnItemClickCallback(object : FavUserAdapter.OnItemClickCallback {
             override fun onItemClicked(uriWithId: Uri) {
+                // It should delete the item in database but in actual app it doesn't.
                 contentResolver.delete(uriWithId, null, null)
                 loadNotesAsync()
             }
