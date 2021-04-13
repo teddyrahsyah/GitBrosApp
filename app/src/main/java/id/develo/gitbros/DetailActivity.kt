@@ -97,13 +97,18 @@ class DetailActivity : AppCompatActivity(), IParentActivityCallback {
     private fun addDeleteFavorite(status: Boolean) {
         if (status) {
             // Adding to Favorite DB
-            val values = ContentValues()
-            values.put(COLUMN_USERNAME, username)
-            values.put(COLUMN_NAME, name)
-            Log.d("USER", username)
-            values.put(COLUMN_AVATAR_URL, avatar)
-            values.put(COLUMN_REPOSITORY, repository.toString())
-            favoriteHelper.insert(values)
+            try {
+                val values = ContentValues()
+
+                values.put(COLUMN_USERNAME, username)
+                values.put(COLUMN_NAME, name)
+                Log.d("USER", username)
+                values.put(COLUMN_AVATAR_URL, avatar)
+                values.put(COLUMN_REPOSITORY, repository.toString())
+                favoriteHelper.insert(values)
+            } catch (e: Exception) {
+                Log.d("hidden", "Can't do double add DB!")
+            }
         }
         else {
             // Deleting to Favorite DB
@@ -113,7 +118,7 @@ class DetailActivity : AppCompatActivity(), IParentActivityCallback {
 
     private fun getUserData(url: String?) {
         val client = AsyncHttpClient()
-        client.addHeader("Authorization", "token b8438da8c17bc27d7c586739fa12b1f8d50db3a5")
+        client.addHeader("Authorization", "token <API TOKEN>")
         client.addHeader("User-Agent", "request")
         client.get(url, object : AsyncHttpResponseHandler() {
             @SuppressLint("StringFormatMatches")
@@ -131,7 +136,6 @@ class DetailActivity : AppCompatActivity(), IParentActivityCallback {
                     avatar = jsonObj.getString("avatar_url")
                     totalFollowers = jsonObj.getInt("followers")
                     totalFollowing = jsonObj.getInt("following")
-
 
                     if (name == "null") {
                         binding.tvDtlName.text = resources.getString(R.string.name)
@@ -197,7 +201,6 @@ class DetailActivity : AppCompatActivity(), IParentActivityCallback {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        favoriteHelper.close()
         finish()
     }
 

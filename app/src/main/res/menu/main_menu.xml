@@ -23,6 +23,10 @@
                 android:id="@+id/language"
                 android:title="@string/language"
                 app:showAsAction="never" />
+            <item
+                android:id="@+id/reminder"
+                android:title="@string/reminder_off"
+                app:showAsAction="never" />
         </menu>
     </item>
 </menu>

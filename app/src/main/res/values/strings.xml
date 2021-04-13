@@ -22,4 +22,7 @@
     <string name="username">\@%s</string>
     <string name="favorites">Favorites</string>
     <string name="favorite_users">Favorite Users</string>
+    <string name="reminder_off">Reminder: OFF</string>
+    <string name="reminder_on">Reminder: ON</string>
+
 </resources>

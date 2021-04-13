@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -19,12 +20,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.develo.gitbros.adapter.UserAdapter
 import id.develo.gitbros.databinding.ActivityMainBinding
 import id.develo.gitbros.model.MainViewModel
+import id.develo.gitbros.reminder.AlarmReceiver
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: UserAdapter
     private lateinit var binding: ActivityMainBinding
+    private lateinit var alarmReceiver: AlarmReceiver
     private val mainViewModel: MainViewModel by viewModels()
+
+    private var stateReminder = false
+    private lateinit var reminderString: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -32,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+        alarmReceiver = AlarmReceiver()
 
         val colorDrawable = ColorDrawable(Color.parseColor("#2A2A2A"))
         supportActionBar?.setBackgroundDrawable(colorDrawable)
@@ -84,12 +92,44 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_fav -> {
                 Intent(this@MainActivity, FavoriteActivity::class.java).also {
+                    it.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(it)
                 }
                 true
             }
+            R.id.reminder -> {
+                stateReminder = !stateReminder
+                item.title = setStatusReminder(stateReminder)
+                setOrUnsetAlarm(stateReminder)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun setOrUnsetAlarm(stateReminder: Boolean) {
+        if (stateReminder) {
+            val myMessage = "Let's find out new github users!"
+            alarmReceiver.setRepeatingAlarm(
+                this,
+                AlarmReceiver.TYPE_REPEATING,
+                "09:00",
+                myMessage
+            )
+            Toast.makeText(this, "Reminder is ON!", Toast.LENGTH_SHORT).show()
+        } else {
+            alarmReceiver.cancelAlarm(this, AlarmReceiver.TYPE_REPEATING)
+            Toast.makeText(this, "Reminder is OFF!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun setStatusReminder(stateReminder: Boolean): String {
+        if (stateReminder) {
+            reminderString = resources.getString(R.string.reminder_on)
+        } else {
+            reminderString = resources.getString(R.string.reminder_on)
+        }
+        return reminderString
     }
 
     private fun showLoading(state: Boolean) {

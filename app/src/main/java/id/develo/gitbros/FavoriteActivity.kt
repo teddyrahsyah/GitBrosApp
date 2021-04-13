@@ -1,17 +1,24 @@
 package id.develo.gitbros
 
+import android.database.ContentObserver
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import id.develo.gitbros.adapter.FavUserAdapter
 import id.develo.gitbros.databinding.ActivityFavoriteBinding
+import id.develo.gitbros.db.DatabaseContract.UserColumns.Companion.CONTENT_URI
 import id.develo.gitbros.db.FavoriteHelper
 import id.develo.gitbros.helper.MappingHelper
+import id.develo.gitbros.model.FavoriteUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -31,28 +38,48 @@ class FavoriteActivity : AppCompatActivity() {
 
         val colorDrawable = ColorDrawable(Color.parseColor("#2A2A2A"))
         supportActionBar?.setBackgroundDrawable(colorDrawable)
+
         supportActionBar?.title = resources.getString(R.string.favorite_users)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        adapter = FavUserAdapter()
+        adapter.notifyDataSetChanged()
+
         binding.rvFavUser.layoutManager = LinearLayoutManager(this)
-        binding.rvFavUser.setHasFixedSize(true)
-        adapter = FavUserAdapter(this)
         binding.rvFavUser.adapter = adapter
+        binding.rvFavUser.setHasFixedSize(true)
+
+        val handlerThread = HandlerThread("DataObserver")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
 
         showLoading(true)
         loadNotesAsync()
+        val myObserver = object : ContentObserver(handler){
+            override fun onChange(selfChange: Boolean) {
+                super.onChange(selfChange)
+                loadNotesAsync()
+            }
+        }
+
+        contentResolver.registerContentObserver(CONTENT_URI, true, myObserver)
+
+        adapter.setOnItemClickCallback(object : FavUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(uriWithId: Uri) {
+                contentResolver.delete(uriWithId, null, null)
+                loadNotesAsync()
+            }
+        })
     }
 
     private fun loadNotesAsync() {
         GlobalScope.launch(Dispatchers.Main) {
             binding.progressBar.visibility = View.VISIBLE
 
-            val favoriteHelper = FavoriteHelper.getInstance(applicationContext)
-            favoriteHelper.open()
-
             val defferedNotes = async(Dispatchers.IO) {
-                val cursor = favoriteHelper.queryAll()
+                val cursor = contentResolver.query(CONTENT_URI, null, null, null, null)
                 MappingHelper.mapCursorToArrayList(cursor)
+
             }
             binding.progressBar.visibility = View.INVISIBLE
             val notes = defferedNotes.await()
@@ -63,7 +90,6 @@ class FavoriteActivity : AppCompatActivity() {
                 showSnackBarMessage("Tidak ada data saat ini...")
             }
             showLoading(false)
-            favoriteHelper.close()
         }
     }
 

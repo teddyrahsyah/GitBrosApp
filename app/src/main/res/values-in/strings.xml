@@ -20,6 +20,8 @@
     <string name="repo">%s Repositori</string>
     <string name="name">Tidak Ada Nama</string>
     <string name="username">\@%s</string>
-    <string name="favorites">Favorites</string>
-    <string name="favorite_users">Favorite Users</string>
+    <string name="favorites">Favorit</string>
+    <string name="favorite_users">User Favorit</string>
+    <string name="reminder_off">Pengingat: OFF</string>
+    <string name="reminder_on">Pengingat: ON</string>
 </resources>
